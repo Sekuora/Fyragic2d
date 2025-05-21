@@ -1,0 +1,7 @@
+/out
+.vessel/
+/packages
+bin/
+/.vs
+build/
+.idea/
