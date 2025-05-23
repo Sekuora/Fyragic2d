@@ -6,6 +6,8 @@ cmake_minimum_required (VERSION 3.29)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+### Compiler Flags ###
+
 
 ### vcpkg toolchain file ### 
 set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/.vessel/externals/vcpkg")
@@ -15,36 +17,58 @@ set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE S
 
 ### Set Project Directories ###
 
+# Include Files
+set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Source/Include")
+
 ###
 
 # Setup Project
 project ("Fyragic2D")
 
 # Find and link dependencies as specified by VCPKG
+
+# Package Dependencies
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
-find_package(SDL2_mixer CONFIG REQUIRED)
 find_package(Lua REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
+# Path Dependencies
 find_path(SOL2_INCLUDE_DIRS "sol/abort.hpp")
-
-
 
 # Glob all from source dir
 file(GLOB Sources "Source/*.cpp")
-file(GLOB Includes "Source/Include/*.h")
+file(GLOB Includes "Source/Include/*.h""Source/Include/*.hpp")
+
+## Clean Binary Directory
+add_custom_target(CleanBuild
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_BINARY_DIR}/*
+    COMMENT "Cleaning build files"
+)
+
 
 
 # Add sources to this project's executable.
-add_executable (${CMAKE_PROJECT_NAME} ${Sources} ${Includes})
+add_executable (${CMAKE_PROJECT_NAME} ${Sources} )
+
+add_dependencies(${CMAKE_PROJECT_NAME} CleanBuild)
+
+### Include Files / Headers Directories
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
+
+### External Dependencies Include Directories
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR} ${SOL2_INCLUDE_DIRS})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf-shared imgui::imgui ${LUA_LIBRARIES})
-target_link_libraries(${CMAKE_PROJECT_NAME}  PRIVATE $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
+### External Dependencies Link Libraries
+
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf-shared imgui::imgui ${LUA_LIBRARIES} glm::glm-header-only)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL3_image::SDL3_image-shared>,SDL3_image::SDL3_image-shared,SDL3_image::SDL3_image-static>)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glm::glm-header-only)
+
+### Set Resources / Assets Folder. ###
+
+# Define the resources folder to be copied onto the compiled project folder
+file(COPY "${PROJECT_SOURCE_DIR}/Resources" DESTINATION "${CMAKE_BINARY_DIR}")

@@ -22,10 +22,11 @@ call "%VCPKG_DIR%\bootstrap-vcpkg.bat"
 
 :: Step 3: Install required dependencies
 echo Installing dependencies...
-call "%VCPKG_DIR%\vcpkg.exe" install sdl3 sdl3-image sdl3-ttf sdl2-mixer lua glm imgui sol2 --triplet=%TRIPLET%
+call "%VCPKG_DIR%\vcpkg.exe" install --recurse sdl3 sdl3-image[png] sdl3-image sdl3-ttf sdl2-mixer lua glm imgui sol2 --triplet=%TRIPLET%
 
 ::Step 4: Install required dependencies
 call "%VCPKG_DIR%\vcpkg.exe" list
+
 
 @pause
 endlocal

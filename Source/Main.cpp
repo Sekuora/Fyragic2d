@@ -1,31 +1,20 @@
 #include <iostream>
-#include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
-#include <SDL3_ttf/SDL_ttf.h>
-#include <glm/glm.hpp>
-#include <imgui.h>
-#include <sol/sol.hpp>
+
+#include "Game.hpp"
 
 
 int main()
 {
-	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS))
-	{
-		printf("SDL Initialization failed: %s\n", SDL_GetError());
-		return -1;
-	}
+	Game game;
 
-	sol::state lua;
-	lua.open_libraries(sol::lib::base);
+	game.Setup();
 
-	lua.script("print('Hello from Lua!')");
+	game.Start();
 
-	glm::vec2 velocity = glm::vec2(2.0, -1.0);
+	game.Run();
 
-	std::cout << "Hello, world! \n";
+	game.End();
 
-	// Your SDL code here...
 
-	SDL_Quit(); // Clean up before exiting
 	return 0;
 }
