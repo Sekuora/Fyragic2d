@@ -1,9 +1,12 @@
-#include "Game.hpp"
+#include "GameSystem.h"
+
+#include "Log.h"
 
 #include <iostream>
 #include <cassert>
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_time.h>
 #include <SDL3_image/SDL_image.h>
 
 #include <glm/glm.hpp>
@@ -16,18 +19,21 @@ Game::Game()
 {
 	isRunning = false;
 
-	cout << "Game Constructor Called \n";
+	Log::Message("Game Constructor Called");
 
 	window = nullptr;
 	renderer = nullptr;
 
 	windowWidth = 600;
 	windowHeight = 600;
+
+	previousFrameMilliseconds = 0;
+	deltaTime = 0;
 }
 
 Game::~Game()
 {
-	cout << "Game Destructor Called \n";
+	Log::Message("Game Destructor Called");
 }
 
 void Game::Start()
@@ -37,23 +43,24 @@ void Game::Start()
 
 	if (!SDL_Init(SDL_INIT_VIDEO))
 	{
+		Log::Error("There was an error loading video components: ");
 		assert(SDL_WasInit(SDL_INIT_VIDEO));
 		return;
 	}
-
-	// Set Window Parameters
 
 
 	// Create Window and Renderer
 
 	if (!SDL_CreateWindowAndRenderer("Fyragic Engine Game", windowWidth, windowHeight, SDL_WINDOW_BORDERLESS, &window, &renderer))
 	{
-		assert(window && SDL_GetError());
+		Log::Error("There was an error creating a window and renderer: ");
+		assert(window);
+
 	}
 
 	// True Fulscreen
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-	cout << "Window Set to Fullscreen\n";
+	Log::Message("Window Set to Fullscreen");
 
 
 	isRunning = true;
@@ -61,6 +68,7 @@ void Game::Start()
 
 void Game::Run()
 {
+
 	while (isRunning)
 	{
 		ProcessInput();
@@ -106,13 +114,26 @@ glm::vec2 playerVelocity;
 void Game::Setup()
 {
 	playerPosition = glm::vec2(10.0, 20.0);
-	playerVelocity = glm::vec2(1.0, 0.0);
+	playerVelocity = glm::vec2(60.0, 0.0);
 }
 
 void Game::Update()
 {
-	playerPosition.x += playerVelocity.x;
-	playerPosition.y += playerVelocity.y;
+	//while ((SDL_GetTicks() <= previousFrameMilliseconds + FYR_millisecondsPerFrame));
+	Uint64 frameTimeToWait = FYR_millisecondsPerFrame - (SDL_GetTicks() - previousFrameMilliseconds);
+
+	if (frameTimeToWait > 0 && frameTimeToWait <= FYR_millisecondsPerFrame)
+	{
+		SDL_Delay(frameTimeToWait);
+	}
+
+	deltaTime = (SDL_GetTicks() - previousFrameMilliseconds) / FYR_milliseconds;
+	 
+	// Implement constant framerate
+	previousFrameMilliseconds = SDL_GetTicks();
+
+	playerPosition.x += playerVelocity.x * deltaTime;
+	playerPosition.y += playerVelocity.y * deltaTime;
 }
 
 void Game::Render()

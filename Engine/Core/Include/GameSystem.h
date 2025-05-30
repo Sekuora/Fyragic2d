@@ -3,6 +3,11 @@
 class SDL_Window;
 class SDL_Renderer;
 
+
+const float FYR_milliseconds = 1000.0f;
+const int FYR_fps = 1000;
+const int FYR_millisecondsPerFrame = FYR_milliseconds / FYR_fps;
+
 class Game
 {
 
@@ -43,8 +48,18 @@ private:
 	SDL_Renderer* renderer;
 
 	/**
-	* Check Is Running
+	* @brief Check Is Running
 	**/
 	bool isRunning;
+
+	/*
+	* @brief Track previous frame milliseconds for constant framerate implementation
+	*/
+	int previousFrameMilliseconds;
+
+	/*
+	* @brief The difference in ticks since the last frame in terms of seconds
+	*/
+	double deltaTime;
 
 };

@@ -18,7 +18,10 @@ set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE S
 ### Set Project Directories ###
 
 # Include Files
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Source/Include")
+set(ENGINE_CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Engine/Core/Include")
+
+# Engine Core 
+set(ENGINE_CORE_DIR "${CMAKE_SOURCE_DIR}/Engine/Core")
 
 ###
 
@@ -39,24 +42,24 @@ find_package(imgui CONFIG REQUIRED)
 find_path(SOL2_INCLUDE_DIRS "sol/abort.hpp")
 
 # Glob all from source dir
-file(GLOB Sources "Source/*.cpp")
-file(GLOB Includes "Source/Include/*.h""Source/Include/*.hpp")
+file(GLOB Sources "Engine/*.cpp")
+file(GLOB_RECURSE EngineSources "${ENGINE_CORE_DIR}/*.cpp")
+file(GLOB Includes "Engine/Core/Include/*.h""Engine/Core/Include/*.hpp")
 
-## Clean Binary Directory
+## Clean Binary Directory   
 add_custom_target(CleanBuild
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_BINARY_DIR}/*
     COMMENT "Cleaning build files"
 )
 
-
-
 # Add sources to this project's executable.
-add_executable (${CMAKE_PROJECT_NAME} ${Sources} )
+add_executable (${CMAKE_PROJECT_NAME} ${Sources} ${EngineSources})
 
 add_dependencies(${CMAKE_PROJECT_NAME} CleanBuild)
 
 ### Include Files / Headers Directories
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${ENGINE_CORE_INCLUDE_DIR})
 
 ### External Dependencies Include Directories
 
