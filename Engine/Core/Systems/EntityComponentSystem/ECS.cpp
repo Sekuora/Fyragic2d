@@ -4,6 +4,12 @@
 
 using std::find;
 using std::remove_if;
+using std::to_string;
+
+
+
+int BComponent::nextId = 0;
+
 
 void System::AddEntityToSystem(Entity entity)
 {
@@ -19,10 +25,9 @@ void System::RemoveEnitytFromSystem(Entity entity)
 		}),
 		entities.end());
 
-
 }
 
-std::vector<Entity> System::GetSystemEntities() const
+vector<Entity> System::GetSystemEntities() const
 {
 	return std::vector<Entity>();
 }
@@ -32,13 +37,13 @@ Entity Registry::CreateEntity()
 {
 	int entityId;
 
-	entityId = numEntities++;
+	entityId = numberOfEntities++;
 
 	Entity entity(entityId);
 
 	entitiesToAdd.insert(entity);
 
-	Log::Message("Entity created with id = " + std::to_string(entityId));
+	Log::Message("Entity created with id = " + to_string(entityId));
 
 	return entity;
 
