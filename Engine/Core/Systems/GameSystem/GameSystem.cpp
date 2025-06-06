@@ -2,6 +2,8 @@
 
 #include "Log.h"
 
+#include "ECS.h"
+
 #include <iostream>
 #include <cassert>
 
@@ -108,13 +110,9 @@ void Game::ProcessInput()
 	}
 }
 
-glm::vec2 playerPosition;
-glm::vec2 playerVelocity;
-
 void Game::Setup()
 {
-	playerPosition = glm::vec2(10.0, 20.0);
-	playerVelocity = glm::vec2(60.0, 0.0);
+	
 }
 
 void Game::Update()
@@ -132,8 +130,6 @@ void Game::Update()
 	// Implement constant framerate
 	previousFrameMilliseconds = SDL_GetTicks();
 
-	playerPosition.x += playerVelocity.x * deltaTime;
-	playerPosition.y += playerVelocity.y * deltaTime;
 }
 
 void Game::Render()
@@ -146,14 +142,14 @@ void Game::Render()
 
 	SDL_Texture* texture = IMG_LoadTexture(renderer, imagePath);
 
-	// Rectangle where texture will be rendered
-	SDL_FRect* destRect = new SDL_FRect{ playerPosition.x, playerPosition.y, 32, 32 };
+	//// Rectangle where texture will be rendered
+	//SDL_FRect* destRect = new SDL_FRect{ playerPosition.x, playerPosition.y, 32, 32 };
 
-	// Render Texture
-	if (!SDL_RenderTexture(renderer, texture, NULL, destRect))
-	{
-		cout << SDL_GetError() << endl;
-	}
+	//// Render Texture
+	//if (!SDL_RenderTexture(renderer, texture, NULL, destRect))
+	//{
+	//	cout << SDL_GetError() << endl;
+	//}
 
 	//SDL_DestroyTexture(texture);
 

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "GameSystem.h"
+#include "FyragicEngine.h"
 
 
 int main()
@@ -14,7 +14,6 @@ int main()
 	game.Run();
 
 	game.End();
-
 
 	return 0;
 }

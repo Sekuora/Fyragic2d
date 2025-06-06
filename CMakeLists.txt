@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
 ### vcpkg toolchain file ### 
-set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/.vessel/externals/vcpkg")
+set(VCPKG_DIR "${CMAKE_SOURCE_DIR} /.vessel/externals/vcpkg")
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
 ###
@@ -22,6 +22,9 @@ set(ENGINE_CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Engine/Core/Include")
 
 # Engine Core 
 set(ENGINE_CORE_DIR "${CMAKE_SOURCE_DIR}/Engine/Core")
+
+# Games 
+set(GAMES_DIR "${CMAKE_SOURCE_DIR}/Games")
 
 ###
 
@@ -45,6 +48,7 @@ find_path(SOL2_INCLUDE_DIRS "sol/abort.hpp")
 file(GLOB Sources "Engine/*.cpp")
 file(GLOB_RECURSE EngineSources "${ENGINE_CORE_DIR}/*.cpp")
 file(GLOB Includes "Engine/Core/Include/*.h""Engine/Core/Include/*.hpp")
+file(GLOB GameSources "${GAMES_DIR}/EngineShowcaseGame/*.cpp")
 
 ## Clean Binary Directory   
 add_custom_target(CleanBuild
@@ -53,7 +57,7 @@ add_custom_target(CleanBuild
 )
 
 # Add sources to this project's executable.
-add_executable (${CMAKE_PROJECT_NAME} ${Sources} ${EngineSources})
+add_executable (${CMAKE_PROJECT_NAME} ${EngineSources} ${GameSources})
 
 add_dependencies(${CMAKE_PROJECT_NAME} CleanBuild)
 
